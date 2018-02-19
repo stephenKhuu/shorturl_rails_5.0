@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ip_address: 
+  lat: 
+  long: 
+  user_agent: 
+  short: one
+
+two:
+  ip_address: 
+  lat: 
+  long: 
+  user_agent: 
+  short: two

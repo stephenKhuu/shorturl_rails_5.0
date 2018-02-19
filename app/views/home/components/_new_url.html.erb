@@ -1,0 +1,81 @@
+<%= form_tag '#', id: "url_form" do %>
+  <%= hidden_field_tag 'latitude', 'none'  %>
+  <%= hidden_field_tag 'longitude', 'none'  %>
+  <%= text_field_tag 'requested_url', nil, :required => true, :placeholder => "Enter your URL here!" %>
+
+  <!-- Rails does some weird JS binding on return false. Use native HTML instead -->
+  <input type="submit" name="commit" value="Generate New URL" disabled="true">
+<% end %>
+
+<div class="error"></div>
+<div id="short-url-placeholder"></div>
+
+<script>
+
+    if (navigator.geolocation) {
+        window.navigator.geolocation.getCurrentPosition(addLatLong);
+    }
+
+    function addLatLong(position) {
+        var latInput = document.querySelector('input[name="latitude"]');
+        var longInput = document.querySelector('input[name="longitude"]');
+
+        latInput.value = position.coords.latitude;
+        longInput.value = position.coords.longitude;
+
+        bindForm();
+        enableForm();
+    }
+
+    function bindForm() {
+        var urlForm = document.querySelector('form');
+        urlForm.onsubmit = submitURL;
+    }
+
+    function enableForm() {
+        var submitButton = document.querySelector('input[type="submit"]');
+
+        submitButton.disabled = false;
+    }
+
+    function submitURL(e) {
+        var urlForm = e.target;
+        var data = new FormData(urlForm);
+        var req = new XMLHttpRequest();
+        var url = "/create";
+        req.open("POST", url, true);
+
+        req.onreadystatechange = function() {//Call a function when the state changes.
+            if(req.readyState == 4 && req.status == 200) {
+                var responseState = JSON.parse(req.responseText);
+
+                if (responseState['status'] == 'success') {
+                    //redirect
+                    showError('');
+                    showShortUrl(responseState['short_id']);
+                } else {
+                    showError(responseState['reason']);
+                }
+
+                enableForm();
+            }
+        };
+        req.send(data);
+
+        return false;
+    }
+
+    function showError(msg) {
+        var errorSection = document.querySelector('.error');
+        errorSection.innerText = msg;
+    }
+
+    function showShortUrl(shortId) {
+        var shortURLDisplay = document.querySelector('#short-url-placeholder');
+
+        shortURLDisplay.innerHTML = 'Your short link is: ' +
+            '<a href="/' + shortId + '">' +
+            'http://shortlnk.com/' + shortId +
+            '</a>';
+    }
+</script>

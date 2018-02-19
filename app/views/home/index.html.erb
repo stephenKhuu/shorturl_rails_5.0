@@ -1,0 +1,6 @@
+<% if @requested_short_id.present? %>
+  <%= render "home/components/redirect" %>
+<% else %>
+  <%= render "home/components/new_url" %>
+<% end %>
+

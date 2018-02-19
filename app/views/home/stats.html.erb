@@ -1,0 +1,32 @@
+<h1>Activities</h1>
+
+<% count = @activities.count %>
+<% if @activities.present? %>
+  <h2>Found <%= count %> activities:</h2>
+  <table>
+    <tr>
+      <td>IP Address</td>
+      <td>Latitude</td>
+      <td>Longitude</td>
+      <td>User Agent</td>
+    </tr>
+    <% @activities.each do |a| %>
+      <tr>
+        <td>
+          <%= a[:ip_address] %>
+        </td>
+        <td>
+          <%= a[:lat] %>
+        </td>
+        <td>
+          <%= a[:long] %>
+        </td>
+        <td>
+          <%= a[:user_agent] %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <div>There are no activities for this short ID</div>
+<% end %>
